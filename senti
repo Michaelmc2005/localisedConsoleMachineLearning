@@ -1,0 +1,62 @@
+import tensorflow as tf
+import numpy as np
+
+sentences = ["The booking system at the department store is so easy to use!","I had a fantastic experience using the booking system for my appointment.","The booking system was fast and convenient.","I appreciate the quick and efficient booking process.","I love how easy it was to book my appointment with the department store's booking system.","The booking system is so user-friendly.","I was able to book my appointment quickly and hassle-free thanks to the booking system.","I was impressed by how efficient and seamless the booking process was.","I had a great experience using the booking system to schedule my appointment.","The booking system was so straightforward and intuitive.","I was able to book my appointment quickly and smoothly with the department store's booking system.","The booking system is a fantastic tool for scheduling appointments at the department store.","I was pleasantly surprised by how easy the booking system was to use.","I had no issues or problems using the booking system to schedule my appointment.","The booking system provided a fantastic and hassle-free experience.","I had a great time using the booking system to book my appointment.","I was able to book my appointment in no time thanks to the user-friendly booking system.","The booking system at the department store was a breeze to use!","I was very impressed by the ease and efficiency of the booking system.","I had a wonderful experience using the booking system to book my appointment.","The booking system is a game-changer for scheduling appointments at the department store.","I was able to book my appointment quickly and efficiently with the department store's booking system.","The booking system was so simple and easy to use!","I was extremely satisfied with my experience using the booking system.","I had a fantastic time using the booking system to schedule my appointment.","The booking system is a great addition to the department store.","I was able to book my appointment with ease thanks to the booking system.","The booking system is a huge time-saver for scheduling appointments at the department store.","I was very pleased with the booking process and how easy it was to use the booking system.","I had a wonderful time using the booking system to book my appointment.","The booking system is a huge improvement over the old way of scheduling appointments.","I was able to book my appointment quickly and without any hassle using the booking system.","The booking system at the department store is a great tool for scheduling appointments.","I had a fantastic experience using the booking system to book my appointment.","I was very happy with how easy it was to use the booking system.","The booking system is a great solution for scheduling appointments at the department store.","I was able to book my appointment quickly and efficiently with the department store's booking system.","The booking system is a great asset to the department store.","I was very satisfied with my experience using the booking system.","I had a great time using the booking system to schedule my appointment.","The booking system is a great improvement for scheduling appointments at the department store.", "The booking system at the department store is frustrating to use.","I had a terrible experience using the booking system for my appointment.","The booking system was slow and cumbersome.","I was disappointed by how time-consuming the booking process was.","I had trouble using the booking system to book my appointment with the department store.","The booking system is not user-friendly at all.","I struggled to book my appointment with the department store's booking system.","I was not impressed by how inefficient the booking process was.","I had a terrible experience trying to schedule my appointment with the booking system.","The booking system was confusing and not intuitive.","I was unable to book my appointment due to issues with the department store's booking system.","The booking system is a hindrance for scheduling appointments at the department store.","I was not pleased with how difficult the booking system was to use.","I had several issues and problems using the booking system to schedule my appointment.","The booking system provided a frustrating and difficult experience.","I was dissatisfied with my experience using the booking system to book my appointment.","I had a hard time using the booking system to book my appointment due to its unintuitive design.","The booking system at the department store was a nightmare to use!","I was not satisfied with the ease and efficiency of the booking system.","I had a bad experience using the booking system to book my appointment.","The booking system is a step backwards for scheduling appointments at the department store.","I was unable to book my appointment quickly due to the booking system's poor design.","The booking system was slow and not user-friendly.","I was extremely dissatisfied with my experience using the booking system.","I had a terrible time trying to schedule my appointment with the booking system.","The booking system is a poor addition to the department store.","I struggled to book my appointment due to the booking system's poor design.","The booking system is a huge waste of time for scheduling appointments at the department store.","I was not pleased with the booking process and how difficult it was to use the booking system.","I had a terrible time trying to book my appointment with the booking system.","The booking system is a huge step backwards from the old way of scheduling appointments.","I was unable to book my appointment quickly or efficiently due to the booking system.","The booking system at the department store is a poor tool for scheduling appointments.","I had a bad experience using the booking system to book my appointment.","I was unhappy with how difficult it was to use the booking system.","The booking system is a poor solution for scheduling appointments at the department store.","I struggled to book my appointment quickly or efficiently with the department store's booking system.","The booking system is a liability to the department store.","I was very dissatisfied with my experience using the booking system.","I had a terrible time trying to schedule my appointment with the booking system.","The booking system is a step backwards for the department store's appointment scheduling process.","I was extremely frustrated with my experience using the booking system."]
+
+
+
+labels = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+vocab = {}
+for sentence in sentences:
+        words = sentence.split(" ")
+        for word in words:
+            if word not in vocab:
+                vocab[word] = len(vocab)
+
+train_labels = np.array(labels)
+model = tf.keras.Sequential([
+        tf.keras.layers.Embedding(len(vocab), 20),
+        tf.keras.layers.GlobalAveragePooling1D(),
+        tf.keras.layers.Dense(16, activation="relu"),
+        tf.keras.layers.Dense(1, activation="sigmoid")
+    ])
+sentences_encoded = []
+for sentence in sentences:
+    words = sentence.split(" ")
+    sentence_encoded = [vocab[word] for word in words]
+    sentences_encoded.append(sentence_encoded)
+max_len = max([len(s) for s in sentences_encoded])
+train_data = np.zeros((len(sentences), max_len), dtype=int)
+for i, s in enumerate(sentences_encoded):
+    for j, w in enumerate(s):
+        train_data[i, j] = w
+train_labels = np.array(labels)
+
+
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+history = model.fit(train_data, train_labels, epochs=1000)
+
+
+def get_reward(sentence, sentiment, user_input2):
+    if sentiment == "positive" and user_input2 == "y":
+        return 1
+    elif sentiment == "negative" and user_input2 == "n":
+        return 1
+    else:
+        return 0
+
+while True:
+    user_input = input("Enter a sentence: ")
+    words = user_input.split(" ")
+    sentence_encoded = [vocab[word] for word in words if word in vocab]
+    padding = [0] * (max_len - len(sentence_encoded))
+    sentence_encoded += padding
+    prediction = model.predict(np.array([sentence_encoded]))
+    sentiment = "positive" if prediction[0][0] > 0.5 else "negative"
+    print("Sentiment:", sentiment)
+    user_input2 = input("Is your review right or not? (y/n)")
+    reward = get_reward(user_input, sentiment, user_input2)
+    if reward == 0 or 1:
+        model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+        history = model.fit(train_data, train_labels, epochs=1000)
+        pass

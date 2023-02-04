@@ -1,0 +1,5 @@
+dependencies{
+    pip
+    pip install tensorflow
+    pip install numpy
+  }

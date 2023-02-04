@@ -54,9 +54,20 @@ while True:
     prediction = model.predict(np.array([sentence_encoded]))
     sentiment = "positive" if prediction[0][0] > 0.5 else "negative"
     print("Sentiment:", sentiment)
-    user_input2 = input("Is your review right or not? (y/n)")
-    reward = get_reward(user_input, sentiment, user_input2)
-    if reward == 0 or 1:
-        model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-        history = model.fit(train_data, train_labels, epochs=1000)
-        pass
+    
+    #reward = get_reward(user_input, sentiment, user_input2)
+    sentences_encoded = []
+    for sentence in sentences:
+        words = sentence.split(" ")
+        sentence_encoded = [vocab[word] for word in words]
+        sentences_encoded.append(sentence_encoded)
+    vocab = {}
+    for sentence in sentences:
+            words = sentence.split(" ")
+            for word in words:
+                if word not in vocab:
+                    vocab[word] = len(vocab)
+    #if reward == 0 or 1:
+        #model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+        #history = model.fit(train_data, train_labels, epochs=1000)
+        #pass

@@ -1,0 +1,46 @@
+import tkinter as tk
+from tkinter import ttk
+
+# Create the main window
+root = tk.Tk()
+root.title("Dark Theme GUI")
+
+# Create a style to use for the widgets
+style = ttk.Style()
+
+# Configure the style for the text box
+style.configure('TEntry', foreground='white', background='#333', padding=10, font=('Helvetica', 14), borderwidth=0, highlightthickness=0)
+
+# Configure the style for the buttons
+style.configure('TButton', foreground='white', background='#555', padding=10, font=('Helvetica', 14), borderwidth=0, highlightthickness=0)
+
+# Create a label to display some text
+label = ttk.Label(root, text="Enter some text:")
+label.grid(row=0, column=0, padx=10, pady=10, sticky='w')
+
+# Create a text box for user input
+text_box = ttk.Entry(root, width=30)
+text_box.grid(row=0, column=1, padx=10, pady=10)
+
+# Create a function to be called when the "Print Text" button is clicked
+def print_text():
+    text = text_box.get()
+    print("You entered:", text)
+
+# Create a "Print Text" button
+print_button = ttk.Button(root, text="Print Text", command=print_text)
+print_button.grid(row=1, column=0, padx=10, pady=10)
+
+# Create a function to be called when the "Clear Text" button is clicked
+def clear_text():
+    text_box.delete(0, tk.END)
+
+# Create a "Clear Text" button
+clear_button = ttk.Button(root, text="Clear Text", command=clear_text)
+clear_button.grid(row=1, column=1, padx=10, pady=10)
+
+# Configure the background color of the root window
+root.configure(background='#333')
+
+# Run the main event loop
+root.mainloop()

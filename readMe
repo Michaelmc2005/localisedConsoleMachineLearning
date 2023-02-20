@@ -3,3 +3,6 @@ dependencies{
     pip install tensorflow
     pip install numpy
   }
+
+
+IGNORE TKINTER FILE FOR NOW - Need to implement connections between the tensorflow code and the interface, for now it is still console based
